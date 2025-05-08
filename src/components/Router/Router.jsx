@@ -12,6 +12,8 @@ import { initAuthListener } from "../../redux/features/auth/authSlice";
 import ScrollToTop from "../layout/shared/ScrollToTop";
 import ScrollToTopButton from "../layout/shared/ScrollToTopButton";
 import Header from "../Layout/ui/Header";
+import { Provider } from "react-redux";
+import { store } from "../../redux/app/store";
 
 // Lazy load page components
 const Category = lazy(() => import("../layout/ui/Categories"));
@@ -54,9 +56,11 @@ function AppRoutes() {
 
 function App() {
     return (
-        <Router>
-            <AppRoutes />
-        </Router>
+        <Provider store={store}>
+            <Router>
+                <AppRoutes />
+            </Router>
+        </Provider>
     );
 }
 
