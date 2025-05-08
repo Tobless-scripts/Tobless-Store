@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { lazy, Suspense } from "react";
 import { initAuthListener } from "../../redux/features/auth/authSlice";
-import ScrollToTop from "../layout/shared/ScrollToTop";
 import ScrollToTopButton from "../layout/shared/ScrollToTopButton";
 import Header from "../Layout/ui/Header";
 import { Provider } from "react-redux";
@@ -35,12 +34,9 @@ function AppRoutes() {
 
     return (
         <div>
-            {!["/", "/signup", "/login"].includes(location.pathname) && (
-                <Header />
-            )}
+            {!["/signup", "/login"].includes(location.pathname) && <Header />}
             <Suspense fallback={<LoadingSpinner />}>
                 <ScrollToTopButton />
-                <ScrollToTop />
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/categories" element={<Category />} />
