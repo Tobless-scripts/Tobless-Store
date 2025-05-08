@@ -7,13 +7,13 @@ import {
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { lazy, Suspense } from "react";
-import LoadingSpinner from "../layout/shared/Loading";
 import { initAuthListener } from "../../redux/features/auth/authSlice";
 import ScrollToTop from "../layout/shared/ScrollToTop";
 import ScrollToTopButton from "../layout/shared/ScrollToTopButton";
 import Header from "../Layout/ui/Header";
 import { Provider } from "react-redux";
 import { store } from "../../redux/app/store";
+import LoadingSpinner from "../layout/shared/Loading";
 
 // Lazy load page components
 const Category = lazy(() => import("../layout/ui/Categories"));
