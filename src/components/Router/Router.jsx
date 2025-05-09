@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { lazy, Suspense } from "react";
 import { initAuthListener } from "../../redux/features/auth/authSlice";
-import ScrollToTopButton from "../layout/shared/ScrollToTopButton";
+import ScrollToTopButton from "../Layout/shared/ScrollToTopButton";
 import Header from "../layout/ui/Header";
 import { Provider } from "react-redux";
 import { store } from "../../redux/app/store";
