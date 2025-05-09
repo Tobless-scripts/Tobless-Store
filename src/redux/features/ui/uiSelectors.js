@@ -21,6 +21,13 @@ export const selectIsAnyPanelOpen = (state) =>
     state.ui.isCartOpen || state.ui.isWishlistOpen;
 
 /**
+ * Selector for search open state
+ * @param {Object} state - The Redux state
+ * @returns {boolean} - Whether any panel is open
+ */
+export const selectIsSearchPanelOpen = (state) => state.ui.isSearchOpen;
+
+/**
  * Selector for getting the entire UI state
  * @param {Object} state - The Redux state
  * @returns {Object} - The complete UI state

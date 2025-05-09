@@ -1,3 +1,4 @@
+import { X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 const ProductSearch = ({
@@ -44,7 +45,6 @@ const ProductSearch = ({
                     product.description?.toLowerCase().includes(searchLower)
             );
 
-            // Generate suggestions from found products
             const productSuggestions = foundProducts
                 .map((p) => p.title)
                 .slice(0, 5);
@@ -54,38 +54,32 @@ const ProductSearch = ({
 
             setSuggestions([...productSuggestions, ...categorySuggestions]);
             onSearch(searchTerm, foundProducts);
+            setShowSuggestions(true);
         }, 300);
 
         return () => clearTimeout(timerId);
     }, [searchTerm, products, onSearch]);
 
     const handleSelectSuggestion = (suggestion) => {
-        setSearchTerm(""); // Clear the input field
+        setSearchTerm("");
         setShowSuggestions(false);
 
-        // Find exact product matches for the suggestion
         const exactProductMatches = products.filter(
             (product) =>
                 product.title.toLowerCase() === suggestion.toLowerCase()
         );
 
         if (exactProductMatches.length > 0) {
-            // If we found exact product matches, show only those products
             onSearch("", exactProductMatches);
-
-            // Find the category of the first matching product
             const firstMatchCategory = exactProductMatches[0].category;
             const categoryIndex = menuItems.findIndex(
                 (item) => item.category === firstMatchCategory
             );
-
             if (categoryIndex !== -1) {
-                // Update the active category
                 setActiveIndex(categoryIndex);
                 setSelectedCategory(firstMatchCategory);
             }
         } else {
-            // Fallback to category search if no exact product match
             const searchLower = suggestion.toLowerCase();
             const foundProducts = products.filter(
                 (product) => product.category.toLowerCase() === searchLower
@@ -101,33 +95,32 @@ const ProductSearch = ({
                     setSelectedCategory(searchLower);
                 }
             } else {
-                // Final fallback to regular search
-                const foundProducts = products.filter(
-                    (product) =>
-                        product.title.toLowerCase().includes(searchLower) ||
-                        product.category.toLowerCase().includes(searchLower)
-                );
-                onSearch("", foundProducts);
+                onSearch(searchLower, []);
             }
         }
     };
 
     return (
-        <div className="relative w-full" ref={searchRef}>
-            <input
-                type="text"
-                placeholder="Search products, categories, brands..."
-                value={searchTerm}
-                onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setShowSuggestions(true);
-                }}
-                onFocus={() => setShowSuggestions(true)}
-                className="w-full lg:w-1/2 px-4 py-2 border text-gray-800 dark:text-gray-200 mx-auto border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-none"
-            />
-
+        <div ref={searchRef}>
+            <div className="flex justify-between items-center">
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search products, categories, brands..."
+                    className="w-full px-4 py-2 bg-transparent border text-gray-800 dark:text-gray-200 mx-auto border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-none lg:w-full md:w-full sm:w-full"
+                />
+                {searchTerm && (
+                    <button
+                        onClick={() => setSearchTerm("")}
+                        className="cursor-pointer"
+                    >
+                        <X size={24} />
+                    </button>
+                )}
+            </div>
             {showSuggestions && suggestions.length > 0 && (
-                <ul className="absolute z-10 w-full lg:w-1/2 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                <ul className="absolute z-10 w-full md:w-1/2 mt-1 bg-white border-none rounded-lg shadow-lg max-h-60 overflow-y-auto">
                     {suggestions.map((suggestion, index) => (
                         <li
                             key={index}

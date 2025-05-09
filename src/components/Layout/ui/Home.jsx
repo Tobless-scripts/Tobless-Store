@@ -1,8 +1,12 @@
+import ProductCarousel from "../shared/ProductCarousel";
+import ProductSwiper from "../shared/ProductSwiper";
+
 function Home() {
     return (
         <>
             <div>
-                <h1>This is the Home</h1>
+                <ProductSwiper />
+                <ProductCarousel />
             </div>
         </>
     );

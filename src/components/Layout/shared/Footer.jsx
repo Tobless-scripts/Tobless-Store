@@ -52,7 +52,7 @@ const Footer = () => {
                     <div className="flex flex-col items-center gap-2 mb-8 lg:items-start">
                         {/* Logo */}
                         <NavLink
-                            to="/home"
+                            to="/"
                             className="flex-shrink-0 mb-4 transition-all duration-300 ease-in-out"
                         >
                             <h1 className="text-gray-200 text-xl md:text-2xl font-semibold">

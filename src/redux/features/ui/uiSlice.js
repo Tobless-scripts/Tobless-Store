@@ -6,6 +6,7 @@ const initialState = {
     isSearchOpen: false,
     isMobileMenuOpen: false,
     isLoginModalOpen: false,
+    isSearchPanelOpen: false,
 };
 
 const uiSlice = createSlice({
@@ -30,6 +31,9 @@ const uiSlice = createSlice({
         toggleWishlist: (state) => {
             state.isWishlistOpen = !state.isWishlistOpen;
         },
+        toggleSearchPanel: (state) => {
+            state.isSearchOpen = !state.isSearchPanelOpen;
+        },
 
         closeAllPanels: (state) => {
             return {
@@ -38,6 +42,7 @@ const uiSlice = createSlice({
                 isWishlistOpen: false,
                 isSearchOpen: false,
                 isMobileMenuOpen: false,
+                isSearchPanelOpen: false,
             };
         },
     },
@@ -51,6 +56,7 @@ export const {
     closeWishlist,
     toggleWishlist,
     closeAllPanels,
+    toggleSearchPanel,
 } = uiSlice.actions;
 
 export const selectIsCartOpen = (state) => state.ui.isCartOpen;
