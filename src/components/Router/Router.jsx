@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { lazy, Suspense } from "react";
 import { initAuthListener } from "../../redux/features/auth/authSlice";
 import ScrollToTopButton from "../layout/shared/ScrollToTopButton";
-import Header from "../Layout/ui/Header";
+import Header from "../layout/ui/Header";
 import { Provider } from "react-redux";
 import { store } from "../../redux/app/store";
 import LoadingSpinner from "../layout/shared/Loading";
@@ -19,7 +19,9 @@ const Category = lazy(() => import("../layout/ui/Categories"));
 const Signup = lazy(() => import("../../pages/auth/Signup"));
 const Login = lazy(() => import("../../pages/auth/Login"));
 const Faq = lazy(() => import("../../pages/static/FAQ"));
-const Home = lazy(() => import("../Layout/ui/Home"));
+const Home = lazy(() => import("../layout/ui/Home"));
+const ProductDetails = lazy(() => import("../Layout/ui/ProductDetails"));
+const Shop = lazy(() => import("../layout/ui/Shop"));
 const AccountOverview = lazy(() =>
     import("../layout/ui/account/AccountOverview")
 );
@@ -43,7 +45,12 @@ function AppRoutes() {
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/faq" element={<Faq />} />
+                    <Route path="/shop" element={<Shop />} />
                     <Route path="/account" element={<AccountOverview />} />
+                    <Route
+                        path="/product/:productId"
+                        element={<ProductDetails />}
+                    />
                 </Routes>
             </Suspense>
         </div>
