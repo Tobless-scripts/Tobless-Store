@@ -20,7 +20,7 @@ import { AddToCartNotification } from "./notifications/AddToCartNotification";
 import { AddToWishlistNotification } from "./notifications/AddToWishlistNotification";
 import { RemovedFromWishlistNotification } from "./notifications/RemovedFromWishlist";
 import { LoggedInNotification } from "./notifications/LoggedInNotification";
-import Accordion from "../shared/Accordion";
+import Accordion from "./Accordion";
 import RelatedProducts from "../shared/RelatedProducts";
 import Footer from "../shared/Footer";
 
@@ -252,8 +252,8 @@ const ProductDetails = () => {
                         <h2 className="text-[#4e5562] dark:text-gray-200">
                             <span className="font-semibold text-black dark:text-white">
                                 {rating ? (
-                                    <p>
-                                        <h2>
+                                    <h2>
+                                        <p>
                                             <span>Rating: </span>
                                             <span>
                                                 {"★".repeat(Math.round(rating))}
@@ -262,8 +262,8 @@ const ProductDetails = () => {
                                                 )}
                                                 ({rating.toFixed(1)}&nbsp;)
                                             </span>
-                                        </h2>
-                                    </p>
+                                        </p>
+                                    </h2>
                                 ) : (
                                     <span>No rating available</span>
                                 )}

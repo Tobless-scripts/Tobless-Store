@@ -14,9 +14,9 @@ import {
     addToWishlist,
 } from "../../redux/features/wishlist/wishlistSlice";
 import { showNotification } from "../../redux/features/notifications/notificationSlice";
-import { LoggedInNotification } from "../layout/ui/notifications/LoggedInNotification";
-import { RemovedFromWishlistNotification } from "../layout/ui/notifications/RemovedFromWishlist";
-import { AddToWishlistNotification } from "../layout/ui/notifications/AddToWishlistNotification";
+import { LoggedInNotification } from "../Layout/ui/notifications/LoggedInNotification";
+import { RemovedFromWishlistNotification } from "../Layout/ui/notifications/RemovedFromWishlist";
+import { AddToWishlistNotification } from "../Layout/ui/notifications/AddToWishlistNotification";
 const Notification = lazy(() =>
     import("../../redux/src/component/Notification")
 );

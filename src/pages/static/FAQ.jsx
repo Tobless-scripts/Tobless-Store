@@ -1,4 +1,4 @@
-import Accordion from "../../components/layout/shared/Accordion";
+import Accordion from "../../components/Layout/ui/Accordion";
 
 function Faq() {
     const Questions = [

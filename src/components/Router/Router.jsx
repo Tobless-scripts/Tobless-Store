@@ -9,21 +9,21 @@ import { useEffect } from "react";
 import { lazy, Suspense } from "react";
 import { initAuthListener } from "../../redux/features/auth/authSlice";
 import ScrollToTopButton from "../Layout/shared/ScrollToTopButton";
-import Header from "../layout/ui/Header";
+import Header from "../Layout/ui/Header";
 import { Provider } from "react-redux";
 import { store } from "../../redux/app/store";
-import LoadingSpinner from "../layout/shared/Loading";
+import LoadingSpinner from "../Layout/shared/Loading";
 
 // Lazy load page components
-const Category = lazy(() => import("../layout/ui/Categories"));
+const Category = lazy(() => import("../Layout/ui/Categories"));
 const Signup = lazy(() => import("../../pages/auth/Signup"));
 const Login = lazy(() => import("../../pages/auth/Login"));
 const Faq = lazy(() => import("../../pages/static/FAQ"));
-const Home = lazy(() => import("../layout/ui/Home"));
+const Home = lazy(() => import("../Layout/ui/Home"));
 const ProductDetails = lazy(() => import("../Layout/ui/ProductDetails"));
-const Shop = lazy(() => import("../layout/ui/Shop"));
+const Shop = lazy(() => import("../Layout/ui/Shop"));
 const AccountOverview = lazy(() =>
-    import("../layout/ui/account/AccountOverview")
+    import("../Layout/ui/account/AccountOverview")
 );
 
 function AppRoutes() {
