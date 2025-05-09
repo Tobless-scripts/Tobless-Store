@@ -5,6 +5,7 @@ import CustomSelect from "../shared/CustomSelect";
 import { ClipLoader } from "react-spinners";
 import ProductSearch from "../../categories/SearchCategory";
 import Footer from "../shared/Footer";
+import { useCategory } from "../../context/categoryContext";
 const useChainMenu = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -56,32 +57,7 @@ const ChainMenu = () => {
     const [activeFilter, setActiveFilter] = useState(null);
     const [searchActive, setSearchActive] = useState(false);
 
-    const menuItems = [
-        { name: "All Products", category: "" },
-        { name: "Smartphones", category: "smartphones" },
-        { name: "Tablets", category: "tablets" },
-        { name: "Laptops", category: "laptops" },
-        { name: "Mobile accessories", category: "mobile-accessories" },
-        { name: "Sport accessories", category: "sports-accessories" },
-        { name: "Fragrances", category: "fragrances" },
-        { name: "Skin care", category: "skin-care" },
-        { name: "Mens watches", category: "mens-watches" },
-        { name: "Mens shirts", category: "mens-shirts" },
-        { name: "Mens shoes", category: "mens-shoes" },
-        { name: "Groceries", category: "groceries" },
-        { name: "Home Decoration", category: "home-decoration" },
-        { name: "Kitchen accessories", category: "kitchen-accessories" },
-        { name: "Furniture", category: "furniture" },
-        { name: "Tops", category: "tops" },
-        { name: "Sunglasses", category: "sunglasses" },
-        { name: "Women watches", category: "womens-watches" },
-        { name: "Women shoes", category: "womens-shoes" },
-        { name: "Women bags", category: "womens-bags" },
-        { name: "Women jewellery", category: "womens-jewellery" },
-        { name: "Women dresses", category: "womens-dresses" },
-        { name: "Vehicle", category: "vehicle" },
-        { name: "Motorcycle", category: "motorcycle" },
-    ];
+    const { menuItems } = useCategory();
 
     const filterItems = [
         { id: 1, name: "Most Popular" },
@@ -152,6 +128,29 @@ const ChainMenu = () => {
             fetchProductsByCategory(selectedCategory);
         }
     }, [selectedCategory, allProducts, fetchProductsByCategory]);
+
+    // In your ChainMenu component, add this useEffect
+    useEffect(() => {
+        const searchParams = new URLSearchParams(window.location.search);
+        const categoryParam = searchParams.get("category");
+
+        if (categoryParam) {
+            const categoryIndex = menuItems.findIndex(
+                (item) => item.category === categoryParam
+            );
+
+            if (categoryIndex !== -1) {
+                setActiveIndex(categoryIndex);
+                setSelectedCategory(categoryParam);
+                fetchProductsByCategory(categoryParam);
+            }
+        }
+    }, [
+        menuItems,
+        fetchProductsByCategory,
+        setActiveIndex,
+        setSelectedCategory,
+    ]);
 
     const handleMenuItemClick = (index, category) => {
         setActiveIndex(index);
@@ -247,7 +246,7 @@ const ChainMenu = () => {
 
     return (
         <>
-            <div className="flex flex-col mb-12 px-2 lg:px-14 lg:flex-row gap-6">
+            <div className="flex flex-col my-12 px-2 lg:px-14 lg:flex-row gap-6">
                 {/* Left Sidebar - Sticky */}
                 <div className="lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)] lg:overflow-y-auto">
                     <div className="py-4 space-y-4">

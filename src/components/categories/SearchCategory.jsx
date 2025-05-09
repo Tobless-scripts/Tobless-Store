@@ -45,91 +45,104 @@ const ProductSearch = ({
                     product.description?.toLowerCase().includes(searchLower)
             );
 
-            const productSuggestions = foundProducts
-                .map((p) => p.title)
-                .slice(0, 5);
-            const categorySuggestions = [
-                ...new Set(foundProducts.map((p) => p.category)),
-            ].slice(0, 3);
-
-            setSuggestions([...productSuggestions, ...categorySuggestions]);
+            setSuggestions(foundProducts);
             onSearch(searchTerm, foundProducts);
-            setShowSuggestions(true);
+            setShowSuggestions(foundProducts.length > 0);
         }, 300);
 
         return () => clearTimeout(timerId);
     }, [searchTerm, products, onSearch]);
 
-    const handleSelectSuggestion = (suggestion) => {
+    const handleSelectSuggestion = (product) => {
         setSearchTerm("");
         setShowSuggestions(false);
 
-        const exactProductMatches = products.filter(
-            (product) =>
-                product.title.toLowerCase() === suggestion.toLowerCase()
+        const categoryItem = menuItems.find(
+            (item) => item.category === product.category
         );
 
-        if (exactProductMatches.length > 0) {
-            onSearch("", exactProductMatches);
-            const firstMatchCategory = exactProductMatches[0].category;
+        if (categoryItem) {
+            onSearch("", [product]);
             const categoryIndex = menuItems.findIndex(
-                (item) => item.category === firstMatchCategory
+                (item) => item.category === product.category
             );
             if (categoryIndex !== -1) {
                 setActiveIndex(categoryIndex);
-                setSelectedCategory(firstMatchCategory);
+                setSelectedCategory(product.category);
             }
         } else {
-            const searchLower = suggestion.toLowerCase();
-            const foundProducts = products.filter(
-                (product) => product.category.toLowerCase() === searchLower
-            );
-
-            if (foundProducts.length > 0) {
-                onSearch("", foundProducts);
-                const categoryIndex = menuItems.findIndex(
-                    (item) => item.category.toLowerCase() === searchLower
-                );
-                if (categoryIndex !== -1) {
-                    setActiveIndex(categoryIndex);
-                    setSelectedCategory(searchLower);
-                }
-            } else {
-                onSearch(searchLower, []);
-            }
+            onSearch("", []);
         }
     };
 
     return (
-        <div ref={searchRef}>
+        <div ref={searchRef} className="relative w-full">
             <div className="flex justify-between items-center">
                 <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    onFocus={() => setShowSuggestions(suggestions.length > 0)}
                     placeholder="Search products, categories, brands..."
-                    className="w-full px-4 py-2 bg-transparent border text-gray-800 dark:text-gray-200 mx-auto border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-none lg:w-full md:w-full sm:w-full"
+                    className="w-full px-4 py-2 bg-transparent border text-gray-800 dark:text-gray-200 mx-auto border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-none"
                 />
                 {searchTerm && (
                     <button
-                        onClick={() => setSearchTerm("")}
-                        className="cursor-pointer"
+                        onClick={() => {
+                            setSearchTerm("");
+                            setSuggestions([]);
+                            setShowSuggestions(false);
+                        }}
+                        className="cursor-pointer ml-2"
                     >
-                        <X size={24} />
+                        <X size={20} />
                     </button>
                 )}
             </div>
-            {showSuggestions && suggestions.length > 0 && (
-                <ul className="absolute z-10 w-full md:w-1/2 mt-1 bg-white border-none rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                    {suggestions.map((suggestion, index) => (
-                        <li
-                            key={index}
-                            className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
-                            onClick={() => handleSelectSuggestion(suggestion)}
-                        >
-                            {suggestion}
+
+            {/* Search suggestions */}
+            {showSuggestions && (
+                <ul
+                    role="listbox"
+                    className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                >
+                    {suggestions.length > 0 ? (
+                        suggestions.map((product) => {
+                            const categoryItem = menuItems.find(
+                                (item) => item.category === product.category
+                            );
+
+                            return (
+                                <li
+                                    key={product.id}
+                                    role="option"
+                                    className={`px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer ${
+                                        !categoryItem
+                                            ? "text-gray-500 italic"
+                                            : "text-black dark:text-white"
+                                    }`}
+                                    onClick={() =>
+                                        handleSelectSuggestion(product)
+                                    }
+                                >
+                                    {product.title}
+                                    {categoryItem ? (
+                                        <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                            {categoryItem.name}
+                                        </span>
+                                    ) : (
+                                        <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                            Category not available
+                                        </span>
+                                    )}
+                                </li>
+                            );
+                        })
+                    ) : (
+                        <li className="px-4 py-2 text-gray-500 dark:text-gray-400 italic">
+                            No results found for "{searchTerm}"
                         </li>
-                    ))}
+                    )}
                 </ul>
             )}
         </div>
