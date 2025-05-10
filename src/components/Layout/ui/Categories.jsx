@@ -6,6 +6,7 @@ import { ClipLoader } from "react-spinners";
 import ProductSearch from "../../categories/SearchCategory";
 import Footer from "../shared/Footer";
 import { useCategory } from "../../context/categoryContext";
+import { useNavigate, useLocation } from "react-router-dom";
 const useChainMenu = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -49,13 +50,14 @@ const useChainMenu = () => {
     };
 };
 
-const ChainMenu = () => {
+const Categories = () => {
+    const location = useLocation();
     const [allProducts, setAllProducts] = useState([]);
     const [categoryProducts, setCategoryProducts] = useState([]);
     const [displayedProducts, setDisplayedProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchActive, setSearchActive] = useState(false);
-
+    const navigate = useNavigate();
     const { menuItems } = useCategory();
 
     const filterItems = [
@@ -67,7 +69,6 @@ const ChainMenu = () => {
         { id: "highest-rating", name: "Highest Rating" },
     ];
 
-    // Initialize with the first filter
     const [activeFilter, setActiveFilter] = useState(filterItems[0]);
 
     const {
@@ -97,129 +98,117 @@ const ChainMenu = () => {
         }
     }, []);
 
-    // Fetch products based on category category
-    const fetchProductsByCategory = useCallback(
-        async (category = "") => {
-            if (!category) {
-                setCategoryProducts(allProducts);
-                setDisplayedProducts(allProducts);
-                return;
-            }
-
-            setLoading(true);
-            try {
+    // Fetch products based on category
+    const fetchProductsByCategory = useCallback(async (category = "") => {
+        setLoading(true);
+        try {
+            let products = [];
+            if (category) {
                 const response = await fetch(
                     `https://dummyjson.com/products/category/${category}`
                 );
                 const data = await response.json();
-                setCategoryProducts(data.products || []);
-                setDisplayedProducts(data.products || []);
-            } catch (error) {
-                console.error("Error fetching products by category:", error);
-            } finally {
-                setLoading(false);
+                products = data.products || [];
+            } else {
+                const response = await fetch(
+                    "https://dummyjson.com/products?limit=100"
+                );
+                const data = await response.json();
+                products = data.products || [];
             }
-        },
-        [allProducts]
-    );
-
-    useEffect(() => {
-        fetchAllProducts();
-    }, [fetchAllProducts]);
-
-    useEffect(() => {
-        if (allProducts.length > 0) {
-            fetchProductsByCategory(selectedCategory);
+            setCategoryProducts(products);
+            return products; // Return the fetched products
+        } catch (error) {
+            console.error("Error fetching products:", error);
+            return [];
+        } finally {
+            setLoading(false);
         }
-    }, [selectedCategory, allProducts, fetchProductsByCategory]);
+    }, []);
 
-    // In your ChainMenu component, add this useEffect
-    useEffect(() => {
-        const searchParams = new URLSearchParams(window.location.search);
-        const categoryParam = searchParams.get("category");
-
-        if (categoryParam) {
-            const categoryIndex = menuItems.findIndex(
-                (item) => item.category === categoryParam
-            );
-
-            if (categoryIndex !== -1) {
-                setActiveIndex(categoryIndex);
-                setSelectedCategory(categoryParam);
-                fetchProductsByCategory(categoryParam);
-            }
+    // Sort function (no dependencies)
+    const sortProducts = (products, filter) => {
+        const sorted = [...products];
+        switch (filter.id) {
+            case "most-popular":
+            case "best-match":
+            case "highest-rating":
+                sorted.sort((a, b) => b.rating - a.rating);
+                break;
+            case "newest":
+                sorted.sort(
+                    (a, b) =>
+                        new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+                );
+                break;
+            case "price-low-high":
+                sorted.sort((a, b) => a.price - b.price);
+                break;
+            case "price-high-low":
+                sorted.sort((a, b) => b.price - a.price);
+                break;
+            default:
+                break;
         }
-    }, [
-        menuItems,
-        fetchProductsByCategory,
-        setActiveIndex,
-        setSelectedCategory,
-    ]);
-
-    const handleMenuItemClick = (index, category) => {
-        setActiveIndex(index);
-        setSelectedCategory(category);
-        setSearchActive(false);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        return sorted;
     };
 
-    // Filter function to preserve filtered results
+    // Apply filter when activeFilter changes (user selects new filter)
     const applyFilter = useCallback(
         (filterType) => {
             if (!filterType) return;
-
-            // Always update the active filter first
             setActiveFilter(filterType);
-
             const productsToFilter = searchActive
                 ? displayedProducts
                 : categoryProducts;
-
-            let sortedProducts = [...productsToFilter];
-
-            switch (filterType.id) {
-                case "most-popular":
-                    sortedProducts.sort((a, b) => b.rating - a.rating);
-                    break;
-                case "best-match":
-                    sortedProducts.sort((a, b) => b.rating - a.rating);
-                    break;
-                case "newest":
-                    sortedProducts.sort(
-                        (a, b) =>
-                            new Date(b.createdAt || 0) -
-                            new Date(a.createdAt || 0)
-                    );
-                    break;
-                case "price-low-high":
-                    sortedProducts.sort((a, b) => a.price - b.price);
-                    break;
-                case "price-high-low":
-                    sortedProducts.sort((a, b) => b.price - a.price);
-                    break;
-                case "highest-rating":
-                    sortedProducts.sort((a, b) => b.rating - a.rating);
-                    break;
-                default:
-                    break;
-            }
-
-            setDisplayedProducts(sortedProducts);
+            setDisplayedProducts(sortProducts(productsToFilter, filterType));
         },
         [categoryProducts, displayedProducts, searchActive]
     );
 
-    // Re-apply filter when category product changes
+    // Initial data fetch
     useEffect(() => {
-        if (categoryProducts.length > 0 && activeFilter) {
-            applyFilter(activeFilter);
-        }
-    }, [categoryProducts, activeFilter, applyFilter]);
+        fetchAllProducts();
+    }, [fetchAllProducts]);
+
+    // Handle category changes from URL
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const categoryParam = searchParams.get("category");
+
+        const loadCategory = async () => {
+            setSearchActive(false);
+            if (categoryParam) {
+                const categoryIndex = menuItems.findIndex(
+                    (item) => item.category === categoryParam
+                );
+                if (categoryIndex !== -1) {
+                    setActiveIndex(categoryIndex);
+                    setSelectedCategory(categoryParam);
+                    const products = await fetchProductsByCategory(
+                        categoryParam
+                    );
+                    setDisplayedProducts(sortProducts(products, activeFilter));
+                }
+            } else {
+                setActiveIndex(0);
+                setSelectedCategory("");
+                const products = await fetchProductsByCategory("");
+                setDisplayedProducts(sortProducts(products, activeFilter));
+            }
+        };
+
+        loadCategory();
+    }, [location.search, menuItems, activeFilter, fetchProductsByCategory]);
+
+    const handleMenuItemClick = (category) => {
+        navigate(category ? `/categories?category=${category}` : "/categories");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
     const handleSearchResults = (searchTerm, foundProducts) => {
         if (!searchTerm.trim()) {
-            // When search is cleared, show current category products
-            setDisplayedProducts(categoryProducts);
+            setDisplayedProducts(sortProducts(categoryProducts, activeFilter));
             setSearchActive(false);
             return;
         }
@@ -227,19 +216,16 @@ const ChainMenu = () => {
         setSearchActive(true);
         setDisplayedProducts(foundProducts);
 
-        // Scroll to top when showing search results
         window.scrollTo({
             top: 0,
             behavior: "smooth",
         });
 
-        // Only update category if we found results and search term isn't empty
         if (foundProducts.length > 0 && searchTerm.trim()) {
             const firstMatchCategory = foundProducts[0].category;
             const categoryIndex = menuItems.findIndex(
                 (item) => item.category === firstMatchCategory
             );
-
             if (categoryIndex !== -1 && categoryIndex !== activeIndex) {
                 setActiveIndex(categoryIndex);
                 setSelectedCategory(firstMatchCategory);
@@ -381,4 +367,4 @@ const ChainMenu = () => {
     );
 };
 
-export default ChainMenu;
+export default Categories;

@@ -18,6 +18,7 @@ import { useCategory } from "../../context/categoryContext";
 
 function Header() {
     const navigate = useNavigate();
+    console.log("Current path:", location.pathname);
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
@@ -183,7 +184,7 @@ function Header() {
                     {/* Logo */}
                     <NavLink to="/" className="flex-shrink-0">
                         <h1 className="text-gray-800 dark:text-gray-200 text-xl md:text-2xl font-semibold">
-                            ToblessMart
+                            ToblessStore
                         </h1>
                     </NavLink>
 
@@ -297,7 +298,7 @@ function Header() {
                                     </span>
                                 )}
                             </div>
-                            {/* User Icon */}
+                            {/* User Account Icon */}
                             <NavLink to="/account">
                                 <button aria-label="Account">
                                     <User
