@@ -54,19 +54,21 @@ const ChainMenu = () => {
     const [categoryProducts, setCategoryProducts] = useState([]);
     const [displayedProducts, setDisplayedProducts] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [activeFilter, setActiveFilter] = useState(null);
     const [searchActive, setSearchActive] = useState(false);
 
     const { menuItems } = useCategory();
 
     const filterItems = [
-        { id: 1, name: "Most Popular" },
-        { id: 2, name: "Best Match" },
-        { id: 3, name: "Newest Arrivals" },
-        { id: 4, name: "Price: Low to High" },
-        { id: 5, name: "Price: High to Low" },
-        { id: 6, name: "Highest Rating" },
+        { id: "most-popular", name: "Most Popular" },
+        { id: "best-match", name: "Best Match" },
+        { id: "newest", name: "Newest Arrivals" },
+        { id: "price-low-high", name: "Price: Low to High" },
+        { id: "price-high-low", name: "Price: High to Low" },
+        { id: "highest-rating", name: "Highest Rating" },
     ];
+
+    // Initialize with the first filter
+    const [activeFilter, setActiveFilter] = useState(filterItems[0]);
 
     const {
         activeIndex,
@@ -95,11 +97,12 @@ const ChainMenu = () => {
         }
     }, []);
 
-    // Fetch products by category
+    // Fetch products based on category category
     const fetchProductsByCategory = useCallback(
         async (category = "") => {
             if (!category) {
                 setCategoryProducts(allProducts);
+                setDisplayedProducts(allProducts);
                 return;
             }
 
@@ -110,6 +113,7 @@ const ChainMenu = () => {
                 );
                 const data = await response.json();
                 setCategoryProducts(data.products || []);
+                setDisplayedProducts(data.products || []);
             } catch (error) {
                 console.error("Error fetching products by category:", error);
             } finally {
@@ -155,63 +159,62 @@ const ChainMenu = () => {
     const handleMenuItemClick = (index, category) => {
         setActiveIndex(index);
         setSelectedCategory(category);
-        setActiveFilter(null);
         setSearchActive(false);
-        setDisplayedProducts(categoryProducts);
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // Modify your filter function to preserve search results
-    const applyFilter = (filterType) => {
-        const productsToFilter = searchActive
-            ? displayedProducts
-            : categoryProducts;
+    // Filter function to preserve filtered results
+    const applyFilter = useCallback(
+        (filterType) => {
+            if (!filterType) return;
 
-        if (!productsToFilter.length) return;
+            // Always update the active filter first
+            setActiveFilter(filterType);
 
-        let sortedProducts = [...productsToFilter];
+            const productsToFilter = searchActive
+                ? displayedProducts
+                : categoryProducts;
 
-        switch (filterType?.id) {
-            case 1: // Best Match
-                sortedProducts.sort((a, b) => b.rating - a.rating);
-                break;
-            case 2: // Most Popular
-                sortedProducts.sort((a, b) => b.rating - a.rating);
-                break;
+            let sortedProducts = [...productsToFilter];
 
-            case 3: // Newest Arrivals
-                sortedProducts.sort(
-                    (a, b) =>
-                        new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
-                );
-                break;
-            case 4: // Price: Low to High
-                sortedProducts.sort((a, b) => a.price - b.price);
-                break;
-            case 5: // Price: High to Low
-                sortedProducts.sort((a, b) => b.price - a.price);
-                break;
-            case 6: // Highest Rating
-                sortedProducts.sort((a, b) => b.rating - a.rating);
-                break;
-            default: // Best Match (case 2)
-                // Keep original order
-                break;
+            switch (filterType.id) {
+                case "most-popular":
+                    sortedProducts.sort((a, b) => b.rating - a.rating);
+                    break;
+                case "best-match":
+                    sortedProducts.sort((a, b) => b.rating - a.rating);
+                    break;
+                case "newest":
+                    sortedProducts.sort(
+                        (a, b) =>
+                            new Date(b.createdAt || 0) -
+                            new Date(a.createdAt || 0)
+                    );
+                    break;
+                case "price-low-high":
+                    sortedProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case "price-high-low":
+                    sortedProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case "highest-rating":
+                    sortedProducts.sort((a, b) => b.rating - a.rating);
+                    break;
+                default:
+                    break;
+            }
+
+            setDisplayedProducts(sortedProducts);
+        },
+        [categoryProducts, displayedProducts, searchActive]
+    );
+
+    // Re-apply filter when category product changes
+    useEffect(() => {
+        if (categoryProducts.length > 0 && activeFilter) {
+            applyFilter(activeFilter);
         }
-
-        setDisplayedProducts(sortedProducts);
-        setActiveFilter(filterType);
-
-        // Scroll to top when applying filters
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
-    };
+    }, [categoryProducts, activeFilter, applyFilter]);
 
     const handleSearchResults = (searchTerm, foundProducts) => {
         if (!searchTerm.trim()) {
@@ -265,7 +268,7 @@ const ChainMenu = () => {
                         <div className="lg:hidden">
                             <CustomSelect
                                 options={menuItems}
-                                defaultValue={menuItems[activeIndex]}
+                                value={menuItems[activeIndex]}
                                 onChange={(selected) => {
                                     const index = menuItems.findIndex(
                                         (item) => item.name === selected.name
@@ -280,14 +283,13 @@ const ChainMenu = () => {
                         </div>
 
                         {/* Filter Selector */}
-                        <div>
-                            <CustomSelect
-                                options={filterItems}
-                                defaultValue={filterItems[1]}
-                                onChange={applyFilter}
-                                placeholder="Filter by"
-                            />
-                        </div>
+                        <CustomSelect
+                            key="filter-select"
+                            options={filterItems}
+                            value={activeFilter}
+                            onChange={applyFilter}
+                            placeholder="Filter by"
+                        />
 
                         {/* Desktop Category Menu */}
                         <div
@@ -350,7 +352,7 @@ const ChainMenu = () => {
 
                 {/* Main Content Area */}
                 <div className="flex-1">
-                    {/* Search Component - Desktop (above products) */}
+                    {/* Search Component  */}
                     <div className="hidden lg:block mb-6">
                         <ProductSearch
                             products={allProducts}
