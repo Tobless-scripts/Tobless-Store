@@ -183,7 +183,7 @@ const EditAddress = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans">
+        <div className="min-h-screen bg-gray-50 px-10 py-4 md:py-8 lg:px-14 font-sans">
             <div className="max-w-6xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-6">
                     {/* Sidebar Navigation */}

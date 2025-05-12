@@ -165,9 +165,9 @@ function Header() {
         <>
             <header className="sticky top-0 z-50">
                 <div
-                    className={`bg-white rounded-lg py-3 px-4 lg:px-14 flex justify-between items-center transition-all duration-300 ease-in-out ${
+                    className={`bg-white rounded-lg py-3 px-10 lg:px-14 flex justify-between items-center transition-all duration-300 ease-in-out ${
                         isScrolled
-                            ? "w-full m-0 max-md:px-6 shadow-md"
+                            ? "w-full m-0 px-10 lg:px-14 shadow-md"
                             : "w-full md:w-full mx-auto"
                     }`}
                 >
@@ -311,7 +311,7 @@ function Header() {
                 </div>
 
                 {/* Mobile Search (sticky below header) */}
-                <div className="md:hidden sticky top-[68px] z-40 bg-white py-2 border-t border-gray-200">
+                <div className="md:hidden sticky top-[68px] z-40 bg-white py-2 px-10 border-t border-gray-200">
                     <div className="relative flex justify-evenly items-center w-full">
                         <input
                             type="text"

@@ -149,7 +149,7 @@ function HomeProduct() {
 
     return (
         <>
-            <main className="w-full px-6 lg:px-14 py-6">
+            <main className="w-full px-10 lg:px-14 py-6">
                 {sections.map((section, index) => (
                     <ProductSection
                         key={section.title}
@@ -184,7 +184,10 @@ const ProductSection = React.forwardRef(
             const slider = sliderRef.current;
             if (!slider) return;
 
-            const scrollAmount = 260;
+            // Check if screen width is greater than lg (1024px)
+            const isLargeScreen = window.innerWidth > 1024;
+            const scrollAmount = isLargeScreen ? 288 : 200;
+
             slider.scrollBy({
                 left: direction === "left" ? -scrollAmount : scrollAmount,
                 behavior: "smooth",
@@ -213,12 +216,14 @@ const ProductSection = React.forwardRef(
                     </button>
                 </div>
 
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-wrap justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-gray-800">{title}</h2>
                     {timer && (
                         <div className="flex items-center space-x-2 bg-red-600 text-white px-3 py-1 rounded-md">
                             <span className="font-medium">Ends in:</span>
-                            <span className="font-mono">58:59:59</span>
+                            <span className="font-mono">
+                                <CountdownTimer />
+                            </span>
                         </div>
                     )}
                 </div>
@@ -235,6 +240,51 @@ const ProductSection = React.forwardRef(
         );
     }
 );
+
+function CountdownTimer() {
+    const [timeLeft, setTimeLeft] = useState({
+        hours: 105,
+        minutes: 59,
+        seconds: 59,
+    });
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTimeLeft((prevTime) => {
+                // Convert everything to seconds
+                let totalSeconds =
+                    prevTime.hours * 3600 +
+                    prevTime.minutes * 60 +
+                    prevTime.seconds;
+                totalSeconds--;
+
+                if (totalSeconds < 0) {
+                    clearInterval(timer);
+                    return { hours: 0, minutes: 0, seconds: 0 };
+                }
+
+                // Convert back to hours, minutes, seconds
+                const hours = Math.floor(totalSeconds / 3600);
+                const remainingSeconds = totalSeconds % 3600;
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
+
+                return { hours, minutes, seconds };
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
+
+    const formatTime = (time) => time.toString().padStart(2, "0");
+
+    return (
+        <span className="font-mono">
+            {formatTime(timeLeft.hours)}:{formatTime(timeLeft.minutes)}:
+            {formatTime(timeLeft.seconds)}
+        </span>
+    );
+}
 
 const ProductCard = ({ product }) => {
     const cardRef = useRef(null);
@@ -301,7 +351,7 @@ const ProductCard = ({ product }) => {
     return (
         <div
             ref={cardRef}
-            className="product-card flex-shrink-0 w-50 bg-white rounded-lg shadow-md mx-1 overflow-hidden transition-all duration-300"
+            className="product-card flex-shrink-0 w-50 xl:w-72 bg-white rounded-lg shadow-md mx-1 overflow-hidden transition-all duration-300"
         >
             <div className="relative h-22 md:h-32 lg:h-42 xl:h-52 py-2 overflow-hidden">
                 <img

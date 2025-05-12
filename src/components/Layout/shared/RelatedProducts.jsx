@@ -155,7 +155,7 @@ const RelatedProducts = ({ currentProductId, category }) => {
     }
 
     return (
-        <div className="px-4 lg:px-14 pb-12">
+        <div className="px-10 lg:px-14 pb-12">
             <h2 className="mb-6 text-2xl font-semibold leading-9 text-slate-900 dark:text-white">
                 Related Products
             </h2>

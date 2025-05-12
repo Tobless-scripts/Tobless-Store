@@ -61,8 +61,8 @@ const Categories = () => {
     const { menuItems } = useCategory();
 
     const filterItems = [
-        { id: "most-popular", name: "Most Popular" },
         { id: "best-match", name: "Best Match" },
+        { id: "most-popular", name: "Most Popular" },
         { id: "newest", name: "Newest Arrivals" },
         { id: "price-low-high", name: "Price: Low to High" },
         { id: "price-high-low", name: "Price: High to Low" },
@@ -126,27 +126,47 @@ const Categories = () => {
         }
     }, []);
 
-    // Sort function (no dependencies)
-    const sortProducts = (products, filter) => {
+    // Sort function
+    const sortProducts = (products, filter, searchQuery = "") => {
         const sorted = [...products];
+        const query = searchQuery.trim().toLowerCase();
+
         switch (filter.id) {
-            case "most-popular":
             case "best-match":
+                if (query) {
+                    sorted.sort((a, b) => {
+                        const aTitle = a.title.toLowerCase();
+                        const bTitle = b.title.toLowerCase();
+                        const aExactMatch = aTitle.includes(query);
+                        const bExactMatch = bTitle.includes(query);
+
+                        if (aExactMatch && !bExactMatch) return -1; // a first
+                        if (!aExactMatch && bExactMatch) return 1; // b first
+                        return b.rating - a.rating;
+                    });
+                }
+                break;
+
+            case "most-popular":
             case "highest-rating":
                 sorted.sort((a, b) => b.rating - a.rating);
                 break;
+
             case "newest":
                 sorted.sort(
                     (a, b) =>
                         new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
                 );
                 break;
+
             case "price-low-high":
                 sorted.sort((a, b) => a.price - b.price);
                 break;
+
             case "price-high-low":
                 sorted.sort((a, b) => b.price - a.price);
                 break;
+
             default:
                 break;
         }
