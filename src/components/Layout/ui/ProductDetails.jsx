@@ -226,7 +226,7 @@ const ProductDetails = () => {
     return (
         <>
             <div className="min-h-screen bg-gray-100 dark:bg-[#181d25] relative">
-                <div className="relative grid grid-cols-1 lg:grid-cols-[65%_35%] gap-10 px-14 pt-12 pb-2">
+                <div className="relative grid grid-cols-1 lg:grid-cols-[65%_35%] gap-10 px-6 lg:px-14 pt-12 pb-2">
                     <div className="flex overflow-x-auto gap-4 lg:grid lg:grid-cols-2 p-4 lg:p-0 scroll-smooth">
                         {directions.map((dir, i) => (
                             <div key={i} className="aspect-square">
@@ -247,28 +247,31 @@ const ProductDetails = () => {
                             {product.description || "No description available"}
                         </p>
                         <h1 className="font-bold text-gray-900 dark:text-gray-200 text-2xl">
-                            ${product.price || "0.00"}
-                        </h1>
-                        <h2 className="text-[#4e5562] dark:text-gray-200">
-                            <span className="font-semibold text-black dark:text-white">
-                                {rating ? (
-                                    <h2>
-                                        <p>
-                                            <span>Rating: </span>
-                                            <span>
-                                                {"★".repeat(Math.round(rating))}
-                                                {"☆".repeat(
-                                                    5 - Math.round(rating)
-                                                )}
-                                                ({rating.toFixed(1)}&nbsp;)
-                                            </span>
-                                        </p>
-                                    </h2>
-                                ) : (
-                                    <span>No rating available</span>
-                                )}
+                            <span className="text-lg font-bold text-gray-900">
+                                ${product.price}
                             </span>
-                        </h2>
+                            {product.discountPercentage > 0 && (
+                                <span className="text-xs text-gray-500 line-through ml-2">
+                                    $
+                                    {(
+                                        product.price /
+                                        (1 - product.discountPercentage / 100)
+                                    ).toFixed(2)}
+                                </span>
+                            )}
+                        </h1>
+                        <div className="text-[#4e5562] dark:text-gray-200 font-semibold">
+                            {rating ? (
+                                <p>
+                                    Rating: {"★".repeat(Math.round(rating))}
+                                    {"☆".repeat(5 - Math.round(rating))} (
+                                    {rating.toFixed(1)})
+                                </p>
+                            ) : (
+                                <p>No rating available</p>
+                            )}
+                        </div>
+
                         <div className="flex justify-between gap-4 items-center">
                             <button
                                 onClick={handleAddToCart}
@@ -366,7 +369,7 @@ function MoreDescription({ product }) {
     ];
 
     return (
-        <div className="px-14 pt-12 pb-12 flex flex-col gap-6 lg:w-[65%]">
+        <div className="px-6 lg:px-14 pt-12 pb-12 flex flex-col gap-6 lg:w-[65%]">
             <div>
                 <p className="text-[#4e5562] dark:text-gray-200 font-normal text-md">
                     {product.description || "No description available"}

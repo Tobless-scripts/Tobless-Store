@@ -198,9 +198,11 @@ const CartItemList = ({ items, onQuantityChange, onRemoveItem }) => (
                     <h3 className="font-medium text-gray-800 dark:text-white">
                         {item.title}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300">
-                        ${item.price.toFixed(2)}
-                    </p>
+                    <div className="flex items-center mt-1">
+                        <span className="text-lg font-bold text-gray-900">
+                            ${item.price}
+                        </span>
+                    </div>
                     <QuantityControl
                         quantity={item.quantity}
                         onDecrease={() =>

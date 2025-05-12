@@ -18,7 +18,6 @@ import { useCategory } from "../../context/categoryContext";
 
 function Header() {
     const navigate = useNavigate();
-    console.log("Current path:", location.pathname);
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
@@ -168,7 +167,7 @@ function Header() {
                 <div
                     className={`bg-white rounded-lg py-3 px-4 lg:px-14 flex justify-between items-center transition-all duration-300 ease-in-out ${
                         isScrolled
-                            ? "w-full mx-0 my-0 shadow-md"
+                            ? "w-full m-0 max-md:px-6 shadow-md"
                             : "w-full md:w-full mx-auto"
                     }`}
                 >
