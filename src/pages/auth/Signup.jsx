@@ -94,7 +94,7 @@ const Signup = () => {
                     "success",
                     "Account created successfully! Redirecting..."
                 );
-                setTimeout(() => navigate("/"), 500);
+                setTimeout(() => navigate("/categories"), 500);
             }
         } catch (err) {
             showNotification(
@@ -135,7 +135,7 @@ const Signup = () => {
                     "success",
                     "Account created successfully! Redirecting..."
                 );
-                setTimeout(() => navigate("/"), 1500);
+                setTimeout(() => navigate("/categories"), 1500);
             }
         } catch (err) {
             showNotification(
@@ -180,7 +180,7 @@ const Signup = () => {
                 <div className="max-w-md mx-auto">
                     <p className="my-4 flex justify-start items-center text-blue-600 hover:text-blue-500 text-sm text-gray-600">
                         <ChevronLeft />
-                        <NavLink to="/" className="font-medium">
+                        <NavLink to="/categories" className="font-medium">
                             Go back
                         </NavLink>
                     </p>

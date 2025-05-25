@@ -1,17 +1,13 @@
 import { X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
-const ProductSearch = ({
-    products,
-    onSearch,
-    menuItems,
-    setActiveIndex,
-    setSelectedCategory,
-}) => {
+const ProductSearch = ({ products, onSearch, menuItems }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const searchRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -54,51 +50,84 @@ const ProductSearch = ({
     }, [searchTerm, products, onSearch]);
 
     const handleSelectSuggestion = (product) => {
-        setSearchTerm("");
         setShowSuggestions(false);
+        const filterTerm = product.brand || product.title;
+        setSearchTerm(filterTerm);
 
-        const categoryItem = menuItems.find(
-            (item) => item.category === product.category
+        // Filter the products to only show matching items
+        const filteredProducts = products.filter(
+            (p) =>
+                p.brand?.toLowerCase() === product.brand?.toLowerCase() ||
+                p.title.toLowerCase().includes(filterTerm.toLowerCase())
         );
 
-        if (categoryItem) {
-            onSearch("", [product]);
-            const categoryIndex = menuItems.findIndex(
-                (item) => item.category === product.category
-            );
-            if (categoryIndex !== -1) {
-                setActiveIndex(categoryIndex);
-                setSelectedCategory(product.category);
-            }
-        } else {
+        onSearch(filterTerm, filteredProducts);
+
+        // Navigate using the specified URL pattern
+        navigate(
+            product.category
+                ? `/categories?category=${encodeURIComponent(product.category)}`
+                : "/categories"
+        );
+    };
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        setShowSuggestions(false);
+
+        if (searchTerm.trim() === "") {
             onSearch("", []);
+            navigate("/categories");
+            return;
         }
+
+        const searchLower = searchTerm.toLowerCase();
+        const filteredProducts = products.filter(
+            (product) =>
+                product.title.toLowerCase().includes(searchLower) ||
+                product.category.toLowerCase().includes(searchLower) ||
+                product.brand?.toLowerCase().includes(searchLower) ||
+                product.description?.toLowerCase().includes(searchLower)
+        );
+
+        onSearch(searchTerm, filteredProducts);
+        navigate("/categories", { state: { searchTerm, filteredProducts } });
     };
 
     return (
         <div ref={searchRef} className="relative w-full">
-            <div className="flex justify-between items-center">
+            <form
+                onSubmit={handleSearchSubmit}
+                className="flex justify-between items-center"
+            >
                 <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    onFocus={() => setShowSuggestions(suggestions.length > 0)}
+                    onFocus={() => {
+                        if (searchTerm && suggestions.length > 0) {
+                            setShowSuggestions(true);
+                        }
+                    }}
                     placeholder="Search products, categories, brands..."
                     className="w-full px-4 py-2 bg-transparent border text-gray-800 dark:text-gray-200 mx-auto border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-none"
                 />
                 {searchTerm && (
                     <button
+                        type="button"
                         onClick={() => {
                             setSearchTerm("");
                             setSuggestions([]);
                             setShowSuggestions(false);
+                            onSearch("", []);
+                            navigate("/categories");
                         }}
                         className="cursor-pointer ml-2"
                     >
                         <X size={20} />
                     </button>
                 )}
-            </div>
+            </form>
 
             {/* Search suggestions */}
             {showSuggestions && (

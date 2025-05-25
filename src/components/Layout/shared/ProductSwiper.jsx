@@ -93,7 +93,7 @@ const ProductSwiper = () => {
     return (
         <div className="w-full min-h-screen flex flex-col items-center justify-center bg-[#f5f7fa] dark:bg-transparent overflow-hidden p-4">
             <div className="text-center lg:px-56 xl:px-76">
-                <h1 className="font-bold text-slate-900 dark:text-slate-200 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.196]">
+                <h1 className="font-bold xl:mt-16 text-slate-900 dark:text-slate-200 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.196]">
                     Everything You Need for a Modern Life
                 </h1>
             </div>
@@ -176,7 +176,7 @@ const ProductSwiper = () => {
             </div>
 
             <div className="mt-8">
-                <NavLink to="/shop">
+                <NavLink to="/categories">
                     <button className="bg-slate-900 dark:bg-slate-200 flex gap-2 justify-center items-center hover:bg-gray-200 mb-12 text-base text-gray-200 dark:text-gray-900 hover:border hover:border-2 hover:border-slate-900 hover:text-[#181d25] leading-4 font-medium py-3 px-6 border border-2 border-gray-200 rounded-full transition-all ease-in-out cursor-pointer">
                         Shop now <ArrowRight />
                     </button>

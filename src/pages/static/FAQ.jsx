@@ -45,8 +45,8 @@ function Faq() {
     ];
     return (
         <>
-            <div className="py-8 px-8 sm:px-28">
-                <h1 className="font-semibold text-slate-900 dark:text-slate-200 text-4xl mb-2 leading-tight text-center mb-12 ">
+            <div className="py-8 px-0 sm:px-14">
+                <h1 className="font-semibold text-slate-900 dark:text-slate-200 text-4xl leading-tight text-center mb-12 ">
                     Popular questions
                 </h1>
                 <Accordion items={Questions} />

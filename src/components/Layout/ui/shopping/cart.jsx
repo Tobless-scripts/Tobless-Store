@@ -171,7 +171,7 @@ const EmptyCart = ({ closeCart }) => (
             proceed with your purchase.
         </h2>
         <NavLink
-            to="/shop"
+            to="/categories"
             onClick={closeCart}
             className="rounded-full bg-primary px-6 py-2 text-gray-900 dark:text-white hover:bg-primary-dark"
         >
@@ -264,7 +264,7 @@ const CartFooter = ({ subtotal, closeCart, onCheckout }) => (
             </span>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
-            <NavLink to="/shop" onClick={closeCart} className="w-full">
+            <NavLink to="/categories" onClick={closeCart} className="w-full">
                 <button className="w-full rounded-full text-gray-700 dark:text-gray-200 bg-gray-200 py-2 px-4 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 cursor-pointer ">
                     Continue Shopping
                 </button>

@@ -15,6 +15,7 @@ import {
     selectIsSearchPanelOpen,
 } from "../../../redux/features/ui/uiSelectors";
 import { useCategory } from "../../context/categoryContext";
+import SidebarMenu from "../shared/MobileSideBar";
 
 function Header() {
     const navigate = useNavigate();
@@ -148,26 +149,13 @@ function Header() {
         }
     }, [searchQuery]);
 
-    const NavBarLinks = [
-        { id: 1, name: "Home", linkTo: "/" },
-        { id: 2, name: "Shop", linkTo: "/shop" },
-        { id: 3, name: "Categories", linkTo: "/categories" },
-    ];
-
-    const getNavLinkClass = ({ isActive }) =>
-        `text-sm leading-[1] transition-all duration-300 w-max ease-in-out font-medium group relative inline-block overflow-hidden py-1 transition-colors ${
-            isActive
-                ? "border-b border-gray-800 dark:border-white text-gray-800 dark:text-white"
-                : "text-gray-900 dark:text-gray-200 hover:text-gray-800 dark:hover:text-white rounded"
-        }`;
-
     return (
         <>
             <header className="sticky top-0 z-50">
                 <div
-                    className={`bg-white rounded-lg py-3 px-10 lg:px-14 flex justify-between items-center transition-all duration-300 ease-in-out ${
+                    className={`bg-white rounded-lg py-3 px-8 lg:px-14 flex justify-between items-center transition-all duration-300 ease-in-out ${
                         isScrolled
-                            ? "w-full m-0 px-10 lg:px-14 shadow-md"
+                            ? "w-full m-0 px-8 lg:px-14 shadow-md"
                             : "w-full md:w-full mx-auto"
                     }`}
                 >
@@ -380,57 +368,19 @@ function Header() {
             </header>
 
             {/* Mobile Menu */}
+
             <div
-                className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
-                    isOpen
-                        ? "opacity-100 bg-black bg-opacity-50"
-                        : "opacity-0 pointer-events-none"
+                ref={navRef}
+                className={`fixed left-0 top-0 w-3/4 h-full bg-white z-50 dark:bg-gray-800 transition-transform duration-300 ease-in-out ${
+                    isOpen ? "translate-x-0" : "-translate-x-full"
                 }`}
-                onClick={() => setIsOpen(false)}
+                onClick={(e) => e.stopPropagation()}
             >
-                <div
-                    ref={navRef}
-                    className={`absolute left-0 top-0 w-3/4 h-full bg-white dark:bg-gray-800 transition-transform duration-300 ease-in-out ${
-                        isOpen ? "translate-x-0" : "-translate-x-full"
-                    }`}
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <div className="flex flex-col h-full p-6">
-                        <div className="flex justify-between items-center mb-8">
-                            <NavLink to="/" onClick={() => setIsOpen(false)}>
-                                <h1 className="text-gray-800 dark:text-white text-2xl font-semibold">
-                                    ToblessMart
-                                </h1>
-                            </NavLink>
-
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                aria-label="Close menu"
-                                className="cursor-pointer"
-                            >
-                                <X className="w-6 h-6 text-gray-800 dark:text-white" />
-                            </button>
-                        </div>
-
-                        <nav className="flex flex-col gap-4 flex-grow">
-                            {NavBarLinks.map((link) => (
-                                <NavLink
-                                    key={link.id}
-                                    to={link.linkTo}
-                                    onClick={() => setIsOpen(false)}
-                                    className={getNavLinkClass}
-                                >
-                                    <span className="relative z-10">
-                                        {link.name}
-                                    </span>
-                                    <span className="absolute left-0 bottom-0 h-0.5 w-0 bg-gray-400 dark:bg-gray-200 transition-all duration-300 group-hover:w-full"></span>
-                                </NavLink>
-                            ))}
-                        </nav>
-
-                        <div className="flex justify-center items-center gap-4 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700"></div>
-                    </div>
-                </div>
+                <SidebarMenu
+                    isOpen={isOpen}
+                    toggleSidebar={() => setIsOpen(!isOpen)}
+                    closeSidebar={() => setIsOpen(false)}
+                />
             </div>
 
             {/* Cart Component */}

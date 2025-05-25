@@ -68,7 +68,7 @@ const Footer = () => {
 
     return (
         <>
-            <footer className="bg-gray-800 text-white pt-12 px-10 lg:px-12 pb-8 text-center md:text-left">
+            <footer className="bg-gray-800 text-white pt-12 px-8 lg:px-12 pb-8 text-center md:text-left">
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 lg:grid-cols-[30%_70%] gap-16">
                         <div className="flex flex-col items-center gap-2 mb-8 lg:items-start">

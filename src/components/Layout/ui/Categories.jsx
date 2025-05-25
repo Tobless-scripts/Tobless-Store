@@ -57,8 +57,10 @@ const Categories = () => {
     const [displayedProducts, setDisplayedProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchActive, setSearchActive] = useState(false);
+    const [highlightProductId, setHighlightProductId] = useState(null);
     const navigate = useNavigate();
     const { menuItems } = useCategory();
+    const productsRef = useRef(null);
 
     const filterItems = [
         { id: "best-match", name: "Best Match" },
@@ -191,6 +193,35 @@ const Categories = () => {
         fetchAllProducts();
     }, [fetchAllProducts]);
 
+    // Handle scrolling to highlighted product
+    useEffect(() => {
+        if (highlightProductId && productsRef.current) {
+            const element = document.getElementById(
+                `product-${highlightProductId}`
+            );
+            if (element) {
+                setTimeout(() => {
+                    element.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                    });
+                    // Add highlight effect
+                    element.classList.add("ring-2", "ring-blue-500");
+                    setTimeout(() => {
+                        element.classList.remove("ring-2", "ring-blue-500");
+                    }, 2000);
+                }, 500); // Small delay to allow category to load
+            }
+        }
+    }, [highlightProductId, displayedProducts]);
+
+    // Update highlightProductId when URL changes
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const highlightParam = searchParams.get("highlight");
+        setHighlightProductId(highlightParam);
+    }, [location.search]);
+
     // Handle category changes from URL
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -219,7 +250,14 @@ const Categories = () => {
         };
 
         loadCategory();
-    }, [location.search, menuItems, activeFilter, fetchProductsByCategory]);
+    }, [
+        location.search,
+        menuItems,
+        activeFilter,
+        fetchProductsByCategory,
+        setActiveIndex,
+        setSelectedCategory,
+    ]);
 
     const handleMenuItemClick = (category) => {
         navigate(category ? `/categories?category=${category}` : "/categories");
@@ -240,17 +278,6 @@ const Categories = () => {
             top: 0,
             behavior: "smooth",
         });
-
-        if (foundProducts.length > 0 && searchTerm.trim()) {
-            const firstMatchCategory = foundProducts[0].category;
-            const categoryIndex = menuItems.findIndex(
-                (item) => item.category === firstMatchCategory
-            );
-            if (categoryIndex !== -1 && categoryIndex !== activeIndex) {
-                setActiveIndex(categoryIndex);
-                setSelectedCategory(firstMatchCategory);
-            }
-        }
     };
 
     return (
@@ -260,18 +287,16 @@ const Categories = () => {
                 <div className="lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)] lg:overflow-y-auto">
                     <div className="py-4 space-y-4">
                         {/* Search Component */}
-                        <div className="lg:hidden mb-4">
+                        <div className="lg:hidden mb-4 px-8">
                             <ProductSearch
                                 products={allProducts}
                                 onSearch={handleSearchResults}
                                 menuItems={menuItems}
-                                setActiveIndex={setActiveIndex}
-                                setSelectedCategory={setSelectedCategory}
                             />
                         </div>
 
                         {/* Mobile Category Selector */}
-                        <div className="lg:hidden">
+                        <div className="lg:hidden px-8">
                             <CustomSelect
                                 options={menuItems}
                                 value={menuItems[activeIndex]}
@@ -289,13 +314,15 @@ const Categories = () => {
                         </div>
 
                         {/* Filter Selector */}
-                        <CustomSelect
-                            key="filter-select"
-                            options={filterItems}
-                            value={activeFilter}
-                            onChange={applyFilter}
-                            placeholder="Filter by"
-                        />
+                        <div className="px-8 lg:px-2">
+                            <CustomSelect
+                                key="filter-select"
+                                options={filterItems}
+                                value={activeFilter}
+                                onChange={applyFilter}
+                                placeholder="Filter by"
+                            />
+                        </div>
 
                         {/* Desktop Category Menu */}
                         <div
@@ -336,7 +363,6 @@ const Categories = () => {
                                                 }`}
                                                 onClick={() =>
                                                     handleMenuItemClick(
-                                                        index,
                                                         item.category
                                                     )
                                                 }
@@ -378,6 +404,7 @@ const Categories = () => {
                             filterName={activeFilter?.name}
                             isSearchActive={searchActive}
                             searchCount={displayedProducts.length}
+                            highlightId={highlightProductId}
                         />
                     )}
                 </div>

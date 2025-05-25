@@ -226,7 +226,7 @@ const ProductDetails = () => {
     return (
         <>
             <div className="min-h-screen bg-gray-100 dark:bg-[#181d25] relative">
-                <div className="relative grid grid-cols-1 lg:grid-cols-[65%_35%] gap-10 px-10 lg:px-14 pt-12 pb-2">
+                <div className="relative grid grid-cols-1 lg:grid-cols-[65%_35%] gap-10 px-8 lg:px-14 pt-12 pb-2">
                     <div className="flex overflow-x-auto gap-4 lg:grid lg:grid-cols-2 p-4 lg:p-0 scroll-smooth">
                         {directions.map((dir, i) => (
                             <div key={i} className="aspect-square">
@@ -369,7 +369,7 @@ function MoreDescription({ product }) {
     ];
 
     return (
-        <div className="px-10 lg:px-14 pt-12 pb-12 flex flex-col gap-6 lg:w-[65%]">
+        <div className="px-8 lg:px-14 pt-12 pb-12 flex flex-col gap-6 lg:w-[65%]">
             <div>
                 <p className="text-[#4e5562] dark:text-gray-200 font-normal text-md">
                     {product.description || "No description available"}

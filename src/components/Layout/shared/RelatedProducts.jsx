@@ -155,7 +155,7 @@ const RelatedProducts = ({ currentProductId, category }) => {
     }
 
     return (
-        <div className="px-10 lg:px-14 pb-12">
+        <div className="px-8 lg:px-14 pb-12">
             <h2 className="mb-6 text-2xl font-semibold leading-9 text-slate-900 dark:text-white">
                 Related Products
             </h2>
@@ -182,9 +182,9 @@ const RelatedProducts = ({ currentProductId, category }) => {
                 {related.map((product) => (
                     <div
                         key={product.id}
-                        className="max-sm:min-w-62 sm:min-w-68 xl:min-w-74 snap-start flex-shrink-0 rounded-lg shadow-md overflow-hidden"
+                        className="min-w-52 sm:min-w-68 xl:min-w-74 snap-start flex-shrink-0 rounded-lg shadow-md overflow-hidden"
                     >
-                        <div className="h-60 relative">
+                        <div className="h-46 relative">
                             <img
                                 src={product.thumbnail}
                                 alt={product.title}

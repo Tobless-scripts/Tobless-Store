@@ -22,7 +22,7 @@ const Login = () => {
         } else {
             setMessage("Logged in with Google successfully!");
             console.log("User:", result.user);
-            navigate("/");
+            navigate("/categories");
         }
     };
 
@@ -35,7 +35,7 @@ const Login = () => {
         } else {
             setMessage("Logged in successfully!");
             console.log("User:", result.user);
-            navigate("/");
+            navigate("/categories");
         }
     };
 
@@ -43,7 +43,7 @@ const Login = () => {
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <p className="mt-2 flex justify-start items-center text-blue-600 hover:text-blue-500 text-sm text-gray-600">
                 <ChevronLeft />
-                <NavLink to="/" className="font-medium">
+                <NavLink to="/categories" className="font-medium">
                     Go back
                 </NavLink>
             </p>

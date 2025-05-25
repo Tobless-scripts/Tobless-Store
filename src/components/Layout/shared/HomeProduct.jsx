@@ -34,7 +34,7 @@ function HomeProduct() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                // Fetch all products (you might want to paginate or fetch by category in a real app)
+                // Fetch all products
                 const response = await fetch(
                     "https://dummyjson.com/products?limit=0"
                 );
@@ -149,7 +149,7 @@ function HomeProduct() {
 
     return (
         <>
-            <main className="w-full px-10 lg:px-14 py-6">
+            <main className="w-full px-8 lg:px-14 py-6">
                 {sections.map((section, index) => (
                     <ProductSection
                         key={section.title}
@@ -351,7 +351,7 @@ const ProductCard = ({ product }) => {
     return (
         <div
             ref={cardRef}
-            className="product-card flex-shrink-0 w-50 xl:w-72 bg-white rounded-lg shadow-md mx-1 overflow-hidden transition-all duration-300"
+            className=" flex-shrink-0 w-50 xl:w-72 bg-white rounded-lg shadow-md mx-1 overflow-hidden transition-all duration-300"
         >
             <div className="relative h-22 md:h-32 lg:h-42 xl:h-52 py-2 overflow-hidden">
                 <img

@@ -188,7 +188,7 @@ const WishList = forwardRef((_, ref) => {
 
                     <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                         <NavLink
-                            to="/shop"
+                            to="/categories"
                             onClick={closeWishlist}
                             className="w-full"
                         >
@@ -215,7 +215,7 @@ const EmptyWishlistView = ({ closeWishlist }) => (
             proceed with your purchase.
         </h2>
         <NavLink
-            to="/shop"
+            to="/categories"
             onClick={closeWishlist}
             className="rounded-full bg-primary px-6 py-2 text-gray-900 dark:text-white hover:bg-primary-dark"
         >
